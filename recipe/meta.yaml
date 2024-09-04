@@ -8,9 +8,7 @@ package:
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 719409e9f2b7d9e0eb778522c954e8c48a052db8f3ffb6a59b0c4684d8efe7db
-    patches:
-      - patches/remove_hardcoded_osx_sysroot_and_deployment_target.patch
-
+    
 build:
   skip: true  # [py<310]
   number: 0
@@ -49,6 +47,7 @@ test:
     - files
   requires:
     - pytest
+    - ada-py
   commands:
     - pytest tests
 
