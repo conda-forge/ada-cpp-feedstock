@@ -1,5 +1,5 @@
-{% set name = 'ada-cpp' %}
-{% set version = '0.1.0' %}
+{% set name = "ada-cpp" %}
+{% set version = "0.1.1" %}
 
 package:
   name: '{{ name|lower }}'
@@ -7,12 +7,10 @@ package:
 
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 499fb878bb3c1d1bd2bd219f747f6e1f41883c6f63e81e192af204664e8908f2
-    patches:
-      - patches/remove_hardcoded_osx_sysroot_and_deployment_target.patch
-
+    sha256: 719409e9f2b7d9e0eb778522c954e8c48a052db8f3ffb6a59b0c4684d8efe7db
+    
 build:
-  skip: True  # [py<310]
+  skip: true  # [py<310]
   number: 0
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
@@ -49,6 +47,7 @@ test:
     - files
   requires:
     - pytest
+    - ada-py
   commands:
     - pytest tests
 
