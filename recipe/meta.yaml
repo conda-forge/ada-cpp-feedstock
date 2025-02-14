@@ -1,5 +1,5 @@
 {% set name = "ada-cpp" %}
-{% set version = "0.1.1" %}
+{% set version = "0.2.0" %}
 
 package:
   name: '{{ name|lower }}'
@@ -7,8 +7,8 @@ package:
 
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 719409e9f2b7d9e0eb778522c954e8c48a052db8f3ffb6a59b0c4684d8efe7db
-    
+    sha256: fadfd136b408ede0abab414aec056c353ae36e51aa063e09d2eb88ce9f0e2fd8
+
 build:
   skip: true  # [py<310]
   number: 0
@@ -18,9 +18,9 @@ build:
 requirements:
   build:
     - {{ stdlib("c") }}
-    - "{{ compiler('c') }}"
-    - "{{ compiler('cxx') }}"
-    - "{{ cdt('mesa-libGL-devel') }}"  # [unix] provides OpenGL development libraries
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ cdt('mesa-libGL-devel') }}  # [unix] provides OpenGL development libraries
     - cmake
     - ninja  # [win]
     - make  # [unix]
@@ -39,7 +39,7 @@ requirements:
 
   run:
     - python
-    - "{{ pin_compatible('gmsh', max_pin='x.x') }}"
+    - {{ pin_compatible('gmsh', max_pin='x.x') }}
 
 test:
   source_files:

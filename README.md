@@ -220,6 +220,3 @@ Feedstock Maintainers
 
 * [@Krande](https://github.com/Krande/)
 
-
-<!-- dummy commit to enable rerendering -->
-
