@@ -1,0 +1,69 @@
+schema_version: 1
+
+context:
+  name: ada-cpp
+  version: 0.2.1
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - url: https://github.com/Krande/adacpp/archive/refs/tags/v${{ version }}.tar.gz
+    sha256: 63e94273aeb79e1af058c2bc8f6d02a05134fae0b7e21800d975e2a51a164e26
+    patches:
+      - patches/fix_test_imports_check.patch
+
+build:
+  number: 2
+  skip: match(python, "<3.10")
+
+requirements:
+  build:
+    - ${{ stdlib("c") }}
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - if: unix
+      then: ${{ cdt('mesa-libGL-devel') }}
+    - cmake
+    - if: win
+      then: ninja
+    - if: unix
+      then: make
+  host:
+    - python
+    - occt
+    - ifcopenshell
+    - cgal-cpp
+    - scikit-build-core
+    - nanobind
+    - cli11
+    - tinygltf
+    - gmsh
+    - pip
+  run:
+    - python
+    - ${{ pin_compatible('gmsh', upper_bound='x.x') }}
+  run_exports:
+    - ${{ pin_subpackage(name, upper_bound='x.x.x') }}
+
+tests:
+  - files:
+      source:
+        - tests
+        - files
+    requirements:
+      run:
+        - pytest
+    script:
+      - pytest tests
+
+about:
+  license: GPL-3.0-or-later
+  license_file: LICENSE
+  summary: A module with drop-in replacement functions for ada-py written in c++ to improve performance.
+  homepage: https://github.com/Krande/adacpp
+
+extra:
+  recipe-maintainers:
+    - Krande
