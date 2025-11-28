@@ -15,7 +15,7 @@ source:
       - patches/fix_test_imports_check.patch
 
 build:
-  number: 2
+  number: 3
   skip: match(python, "<3.10")
 
 requirements:
