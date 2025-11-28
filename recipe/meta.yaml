@@ -1,5 +1,5 @@
 {% set name = "ada-cpp" %}
-{% set version = "0.2.0" %}
+{% set version = "0.2.1" %}
 
 package:
   name: '{{ name|lower }}'
@@ -7,11 +7,11 @@ package:
 
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: fadfd136b408ede0abab414aec056c353ae36e51aa063e09d2eb88ce9f0e2fd8
+    sha256: 63e94273aeb79e1af058c2bc8f6d02a05134fae0b7e21800d975e2a51a164e26
 
 build:
   skip: true  # [py<310]
-  number: 1
+  number: 0
   run_exports:
     - {{ pin_subpackage(name, max_pin='x.x.x') }}
 
