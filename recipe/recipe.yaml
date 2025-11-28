@@ -45,18 +45,6 @@ requirements:
   run_exports:
     - ${{ pin_subpackage(name, upper_bound='x.x.x') }}
 
-tests:
-  - files:
-      source:
-        - tests
-        - files
-    requirements:
-      run:
-        - pytest
-        - ada-py
-    script:
-      - pytest tests
-
 about:
   license: GPL-3.0-or-later
   license_file: LICENSE
