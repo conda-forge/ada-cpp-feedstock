@@ -1,0 +1,30 @@
+Subject: [PATCH] fix test imports check
+---
+Index: tests/py/test_ada_integration.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/tests/py/test_ada_integration.py b/tests/py/test_ada_integration.py
+--- a/tests/py/test_ada_integration.py	(revision a6591f1c8901e7572f8c791ec77c0cfbf5e7ac9a)
++++ b/tests/py/test_ada_integration.py	(date 1764362923580)
+@@ -1,15 +1,14 @@
+-import OCC.Core.Interface as OCCInterface
+ import pytest
+-from OCC.Core.STEPCAFControl import STEPCAFControl_Writer as OCC_STEPCAFControl_Writer
+-from OCC.Core.STEPControl import STEPControl_AsIs
+-from OCC.Core.XSControl import XSControl_WorkSession
+ 
+ from adacpp.cadit import STEPCAFControl_Writer, step_writer_to_string
+ 
+ try:
+     import ada
+     from ada.occ.store import OCCStore
+-
++    import OCC.Core.Interface as OCCInterface
++    from OCC.Core.STEPCAFControl import STEPCAFControl_Writer as OCC_STEPCAFControl_Writer
++    from OCC.Core.STEPControl import STEPControl_AsIs
++    from OCC.Core.XSControl import XSControl_WorkSession
+     has_ada = True
+ except ModuleNotFoundError:
+     has_ada = False
