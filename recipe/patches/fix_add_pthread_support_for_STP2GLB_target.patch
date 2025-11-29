@@ -1,0 +1,37 @@
+Subject: [PATCH] fix: add pthread support for STP2GLB target
+---
+Index: cmake/build_stp2glb.cmake
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cmake/build_stp2glb.cmake b/cmake/build_stp2glb.cmake
+--- a/cmake/build_stp2glb.cmake	(revision bd43e0d5dd4642deb05d2f33cdb535c2be17c368)
++++ b/cmake/build_stp2glb.cmake	(date 1764422629760)
+@@ -24,7 +24,7 @@
+ set_target_properties(STP2GLB PROPERTIES
+         INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/bin"
+ )
+-target_link_libraries(STP2GLB ${ADA_CPP_LINK_LIBS})
++target_link_libraries(STP2GLB ${ADA_CPP_LINK_LIBS} Threads::Threads)
+ 
+ # install to executable into the bin dir
+ # If EXE_BIN_DIR is not set, use root bin dir
+Index: CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	(revision bd43e0d5dd4642deb05d2f33cdb535c2be17c368)
++++ b/CMakeLists.txt	(date 1764422629778)
+@@ -85,6 +85,9 @@
+     include(cmake/deps_occ.cmake)
+     include(cmake/deps_gmsh.cmake)
+     include(cmake/deps_ifc.cmake)
++
++    # Find Threads package for pthread support on Linux
++    find_package(Threads REQUIRED)
+ endif ()
+ 
+ if (BUILD_STP2GLB)
