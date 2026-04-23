@@ -13,9 +13,10 @@ source:
     sha256: 63e94273aeb79e1af058c2bc8f6d02a05134fae0b7e21800d975e2a51a164e26
     patches:
       - patches/fix_test_imports_check.patch
+      - patches/fix_add_pthread_support_for_STP2GLB_target.patch
 
 build:
-  number: 2
+  number: 3
   skip: match(python, "<3.10")
 
 requirements:
