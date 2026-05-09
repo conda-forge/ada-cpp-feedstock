@@ -11,8 +11,6 @@ package:
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v${{ version }}.tar.gz
     sha256: 05fde4c9c3de684f684c0101588ad78d21715a6ad933bf67bf4f97fd6bdc8ccf
-    patches:
-      - patches/fix_test_imports_check.patch
 
 build:
   number: 0
