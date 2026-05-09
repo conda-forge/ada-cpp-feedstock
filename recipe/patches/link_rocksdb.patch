@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: conda-forge feedstock <noreply@conda-forge.org>
+Date: Sat, 9 May 2026 00:00:00 +0000
+Subject: [PATCH] Statically link rocksdb (and pull in its compression deps)
+
+ifcopenshell statically embeds rocksdb in libIfcParse.a / libIfcGeom.a
+because rocksdb's shared library only exposes the C API (c.h), not the
+C++ API (db.h) ifcopenshell uses. See ifcopenshell's CMakeLists.txt
+and https://github.com/facebook/rocksdb/issues/981.
+
+Downstream consumers therefore can't safely depend on a dynamic
+librocksdb.so — that would create two rocksdb instances in the same
+process and ODR conflicts. Link against the static librocksdb.a
+instead so we end up with a single consistent rocksdb in the final
+extension module. snappy / lz4 / zstd are rocksdb's own compression
+deps and surface once we pull rocksdb in statically; they're safe to
+link dynamically.
+
+To be removed once upstream adacpp adds rocksdb to deps_ifc.cmake.
+---
+ cmake/deps_ifc.cmake | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/cmake/deps_ifc.cmake b/cmake/deps_ifc.cmake
+index 0000000..0000001 100644
+--- a/cmake/deps_ifc.cmake
++++ b/cmake/deps_ifc.cmake
+@@ -5,4 +5,11 @@ list(APPEND
+         ADA_CPP_LINK_LIBS
+         IfcParse
+         IfcGeom
+ )
++
++# rocksdb is statically embedded in libIfcParse.a / libIfcGeom.a (see
++# ifcopenshell's CMakeLists, facebook/rocksdb#981). Link the static
++# archive to avoid two rocksdb copies in the final binary, plus its
++# compression deps dynamically.
++find_library(ROCKSDB_STATIC_LIB NAMES librocksdb.a REQUIRED)
++list(APPEND ADA_CPP_LINK_LIBS ${ROCKSDB_STATIC_LIB} snappy lz4 zstd)
