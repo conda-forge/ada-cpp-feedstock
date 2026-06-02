@@ -11,8 +11,6 @@ package:
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v${{ version }}.tar.gz
     sha256: 6492dc147c178cc7031714ae8fcc8ffe2cedb20033121e984612ed96110dd6c0
-    patches:
-      - patches/0001-threads-optional-on-macos.patch
 
 build:
   number: 0
