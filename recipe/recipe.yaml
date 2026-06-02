@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: ada-cpp
-  version: 0.2.1
+  version: "0.4.0"
 
 package:
   name: ${{ name|lower }}
@@ -10,12 +10,10 @@ package:
 
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v${{ version }}.tar.gz
-    sha256: 63e94273aeb79e1af058c2bc8f6d02a05134fae0b7e21800d975e2a51a164e26
-    patches:
-      - patches/fix_test_imports_check.patch
+    sha256: 6492dc147c178cc7031714ae8fcc8ffe2cedb20033121e984612ed96110dd6c0
 
 build:
-  number: 2
+  number: 0
   skip: match(python, "<3.10")
 
 requirements:
@@ -26,21 +24,21 @@ requirements:
     - if: unix
       then: ${{ cdt('mesa-libGL-devel') }}
     - cmake
-    - if: win
-      then: ninja
-    - if: unix
-      then: make
+    - ninja
   host:
     - python
     - occt
-    - ifcopenshell
+    - ifcopenshell >=0.8.5
+    - rocksdb >=10.6.2
+    - zlib
     - cgal-cpp
-    - scikit-build-core
     - nanobind
     - cli11
     - tinygltf
     - gmsh
     - pip
+    - setuptools
+    - wheel
   run:
     - python
     - ${{ pin_compatible('gmsh', upper_bound='x.x') }}
