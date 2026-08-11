@@ -13,7 +13,7 @@ source:
     sha256: 521e169c23fac8ce0e897d62ddd05120b918e05ef8b3e5a9ef291a2529d873dd
 
 build:
-  number: 0
+  number: 1
   skip: match(python, "<3.10")
 
 requirements:
