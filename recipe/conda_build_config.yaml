@@ -1,0 +1,16 @@
+# Hold occt at 7.9.x until gmsh can follow.
+#
+# conda-forge's global pinning has moved to occt 8.0.0, so a re-render picks it
+# up -- but there is no gmsh built against occt 8.x at all (every gmsh build up
+# to and including 4.15.2 build 9 pins `occt >=7.9.3,<7.9.4.0a0`). This recipe
+# needs both occt and gmsh in host, so an occt-8 variant is simply unsolvable
+# and every platform fails.
+#
+# conda-forge/gmsh-feedstock#129 ("Rebuild for occt 8.0.0") is the blocker and
+# has been open since 2026-06-23. REMOVE THIS FILE once it lands; the occt 8.0.0
+# rebuild here (conda-forge/ada-cpp-feedstock#60) can then proceed normally.
+#
+# Without the hold this feedstock cannot be re-rendered for ANY reason --
+# including adding a platform -- without also taking an occt bump that cannot build.
+occt:
+  - 7.9.3

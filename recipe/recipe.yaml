@@ -13,7 +13,7 @@ source:
     sha256: 521e169c23fac8ce0e897d62ddd05120b918e05ef8b3e5a9ef291a2529d873dd
 
 build:
-  number: 0
+  number: 1
   skip: match(python, "<3.10")
 
 requirements:
@@ -21,8 +21,31 @@ requirements:
     - ${{ stdlib("c") }}
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
-    - if: unix
+    # linux, NOT unix: `cdt()` resolves to a CentOS sysroot package
+    # (mesa-libgl-devel-cos6-<arch>), and those are published for Linux
+    # architectures only. `mesa-libgl-devel-cos6-x86_64` happens to exist, so
+    # under `unix` the osx-64 build quietly installed a Linux sysroot package it
+    # never used and passed anyway; osx-arm64 asks for
+    # `mesa-libgl-devel-cos6-arm64`, which does not exist, and the solve fails.
+    # macOS gets OpenGL from the system framework and needs no CDT either way.
+    - if: linux
       then: ${{ cdt('mesa-libGL-devel') }}
+    # Cross-compiling osx-arm64 from an osx-64 builder means the HOST python is
+    # an arm64 binary the builder cannot execute. `cross-python_<target>` supplies
+    # a runnable interpreter configured for the target, which is what lets CMake's
+    # find_package(Python) answer correctly instead of falling back to whatever
+    # python is on PATH -- on CI that was the runner's own pixi env (3.10).
+    #
+    # nanobind is here as well because cmake/build_python.cmake shells out to
+    # `${Python_EXECUTABLE} -m nanobind --cmake_dir` before find_package(nanobind),
+    # so it must be IMPORTABLE at build time, not merely present in host. It is a
+    # noarch, header-only binding library, so the build env's copy is the same
+    # code the target compiles against.
+    - if: build_platform != target_platform
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+        - nanobind
     - cmake
     - ninja
   host:

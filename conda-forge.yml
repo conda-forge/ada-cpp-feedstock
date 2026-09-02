@@ -6,3 +6,34 @@ conda_build:
 conda_forge_output_validation: true
 conda_install_tool: pixi
 conda_build_tool: rattler-build
+# osx-arm64 is cross-compiled from the osx-64 builder, which is how conda-forge
+# produces Apple Silicon artifacts for compiled packages. Without this mapping
+# conda-smithy emits no osx_arm64 variant at all -- which is why this feedstock
+# has published linux-64/osx-64/win-64 only since it was created.
+#
+# NATIVE arm64 is renderable today and is deliberately NOT used yet. Setting
+#     build_platform: {osx_arm64: osx_arm64}
+#     provider:       {osx_arm64: azure}
+# makes conda-smithy emit the same four variants onto `macOS-15-arm64` instead
+# of `macOS-15` (verified by re-rendering). Note that BOTH keys are required:
+# with the native build_platform alone, `provider.osx_arm64` defaults to None
+# and conda-smithy silently emits no arm64 variant at all.
+#
+# It is not used because the Azure `macOS-15-arm64` image is still a limited
+# public preview that Microsoft has PAUSED -- only organizations already using
+# it may continue -- and conda-forge cannot fall back to GitHub Actions for
+# this, because feedstock jobs there would starve the backend services that
+# keep conda-forge running. That is the open blocker on
+# conda-forge/conda-forge.github.io#2829 ("Enable osx-arm64 builds by
+# default"); native CI itself landed in #1781, closed 2026-05-07.
+#
+# Switch when #2829 lands. The payoff is real beyond hardware: under
+# cross-compilation `test: native_and_emulated` SKIPS the recipe's `pytest
+# tests` for arm64, so today's artifact ships untested. A native runner runs it.
+build_platform:
+  osx_arm64: osx_64
+# The recipe's test block runs `pytest tests`, which cannot execute on a
+# cross-compiled target from an osx-64 builder. `native_and_emulated` runs it
+# where the artifact is natively runnable and skips it where it is not, instead
+# of failing the build.
+test: native_and_emulated
