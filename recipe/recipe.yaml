@@ -67,38 +67,6 @@ requirements:
     - ${{ pin_compatible('gmsh', upper_bound='x.x') }}
   run_exports:
     - ${{ pin_subpackage(name, upper_bound='x.x.x') }}
-  # ifcopenshell and rocksdb are build-time-only: both are linked STATICALLY, so
-  # nothing in the installed extension module resolves against them at runtime,
-  # and their run_exports would otherwise make every ada-cpp install drag in the
-  # whole IfcOpenShell + RocksDB runtime closure for code that is already baked
-  # into the .so.
-  #
-  #   * ifcopenshell -- cmake/deps_ifc.cmake links the static archives by name
-  #     (IfcParse, IfcGeom, geometry_kernel_opencascade, geometry_kernel_cgal),
-  #     inside a --start-group/--end-group so the mutual references resolve in
-  #     one pass. There is no libIfcParse.so in the link line.
-  #
-  #   * rocksdb -- deliberately the STATIC RocksDB::rocksdb target. ifcopenshell
-  #     >=0.8.5 embeds rocksdb inside libIfcParse.a, so loading the shared
-  #     librocksdb as well would put a second instance in the process (ODR
-  #     conflict, heap corruption on IfcFile ctor/dtor). Advertising a runtime
-  #     dependency on it therefore points at a library this package must NOT
-  #     load -- dropping it is a correctness fix, not only a size one.
-  #
-  # Both stay in `host:` above: they are still compiled and linked against, and
-  # the version bounds there still pin the ABI the archives were built for.
-  #
-  # occt, gmsh and libzlib are genuinely dynamic and stay as runtime deps.
-  # cgal-cpp is header-only and exports nothing, so it needs no entry here.
-  #
-  # This is self-verifying: everything ships in one extension module, so a
-  # shared library that really were needed would fail to resolve at import, and
-  # the `pytest tests` phase below runs in an environment built from `run:`
-  # alone.
-  ignore_run_exports:
-    by_name:
-      - ifcopenshell
-      - rocksdb
 
 tests:
   - files:
