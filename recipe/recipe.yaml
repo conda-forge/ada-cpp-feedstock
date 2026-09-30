@@ -51,11 +51,15 @@ requirements:
   host:
     - python
     - occt
-    # adacpp >=0.31 builds against either ifcopenshell 0.8.x (static libIfcParse.a /
-    # libIfcGeom.a) or 0.9 (shared libs + CMake package). Held on 0.8.5 until the rest of
-    # adapy's ifcopenshell stack moves to 0.9; run_exports then pins the runtime to 0.8.5.
-    - ifcopenshell 0.8.5.*
-    - rocksdb >=10.6.2
+    # One build per ifcopenshell line in recipe/conda_build_config.yaml (0.8.5 and 0.9.0).
+    - ifcopenshell
+    # 0.8.x embeds rocksdb in libIfcParse.a and adacpp links RocksDB::rocksdb statically
+    # beside it, so hold the rocksdb ABI 0.8.5 was built against; 0.9 co-solves with it.
+    - rocksdb >=10.6.2,<10.7.0a0
+    # ifcopenshell 0.9's IfcOpenShellConfig.cmake find_dependency()s these; neither is a run
+    # dep of ifcopenshell. Unused by the 0.8.5 variant.
+    - libxml2-devel
+    - nlohmann_json
     - zlib
     - cgal-cpp
     - nanobind
