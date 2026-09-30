@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: ada-cpp
-  version: "0.30.1"
+  version: "0.31.0"
 
 package:
   name: ${{ name|lower }}
@@ -10,7 +10,7 @@ package:
 
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v${{ version }}.tar.gz
-    sha256: b1f0f19ec095dc15e7fba4eaa469f326f3f26862fbfd03bf530eace7ab06ade6
+    sha256: cb0b375f599b05502ebc57913a219dc2ceec09c444311a684c4b06ecfe6dc2e9
 
 build:
   number: 0
@@ -51,8 +51,15 @@ requirements:
   host:
     - python
     - occt
-    - ifcopenshell >=0.8.5
-    - rocksdb >=10.6.2
+    # One build per ifcopenshell line in recipe/conda_build_config.yaml (0.8.5 and 0.9.0).
+    - ifcopenshell
+    # 0.8.x embeds rocksdb in libIfcParse.a and adacpp links RocksDB::rocksdb statically
+    # beside it, so hold the rocksdb ABI 0.8.5 was built against; 0.9 co-solves with it.
+    - rocksdb >=10.6.2,<10.7.0a0
+    # ifcopenshell 0.9's IfcOpenShellConfig.cmake find_dependency()s these; neither is a run
+    # dep of ifcopenshell. Unused by the 0.8.5 variant.
+    - libxml2-devel
+    - nlohmann_json
     - zlib
     - cgal-cpp
     - nanobind
@@ -77,7 +84,13 @@ tests:
       run:
         - pytest
     script:
-      - pytest tests
+      # conda-forge's ifcopenshell 0.9.0 osx-64 build segfaults in its own OpenCASCADE kernel on a
+      # plain IfcFacetedBrep box (ifcopenshell.geom.create_shape, no adacpp involved; 0.8.5 and
+      # osx-arm64 are fine). adacpp's `occ` taxonomy pipeline drives that kernel and gets nothing
+      # back, so deselect that one case there until a fixed ifcopenshell build lands.
+      - if: target_platform == "osx-64" and ifcopenshell == "0.9.0"
+        then: pytest tests -k "not (test_blob_tessellates_through_every_pipeline and occ)"
+        else: pytest tests
 
 about:
   license: GPL-3.0-or-later
