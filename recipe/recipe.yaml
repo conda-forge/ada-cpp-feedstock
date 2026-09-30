@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: ada-cpp
-  version: "0.31.0"
+  version: "0.31.1"
 
 package:
   name: ${{ name|lower }}
@@ -10,7 +10,7 @@ package:
 
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v${{ version }}.tar.gz
-    sha256: cb0b375f599b05502ebc57913a219dc2ceec09c444311a684c4b06ecfe6dc2e9
+    sha256: 2a6021acc7eb734ea891161524037162225e4f060abcb09b9557cdc6b2f790fd
 
 build:
   number: 0
