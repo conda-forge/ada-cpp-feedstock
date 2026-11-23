@@ -17,7 +17,7 @@ ifcopenshell:
 libxml2_devel:
 - '2.15'
 occt:
-- 8.0.1
+- 8.0.2
 pin_run_as_build:
   python:
     min_pin: x.x

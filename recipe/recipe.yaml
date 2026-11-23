@@ -17,7 +17,7 @@ source:
       - render-python-3.10.patch
 
 build:
-  number: 0
+  number: 1
   skip:
     - match(python, "<3.10")
     # osx-64 is near end of life and its CI is flaky; macOS ships for osx-arm64 only.
