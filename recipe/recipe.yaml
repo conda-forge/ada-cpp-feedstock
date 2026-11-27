@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: ada-cpp
-  version: "0.45.0"
+  version: "0.46.0"
 
 package:
   name: ${{ name|lower }}
@@ -10,7 +10,7 @@ package:
 
 source:
   - url: https://github.com/Krande/adacpp/archive/refs/tags/v${{ version }}.tar.gz
-    sha256: 3fe12d88402464225291dee94f2a3795e3b05f848a5fb1924b2b0942e10eca0c
+    sha256: 5f9bb081df3819433872a97650c1ee732c4fafe7a3bbb569ab65bf82e9010020
     patches:
       # src/render asks find_package(Python 3.12) although nothing in it needs 3.12, which fails
       # the python 3.11 builds; lower it to adacpp's requires-python floor.
